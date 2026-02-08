@@ -4,6 +4,33 @@ import random, string
 from django.shortcuts import render
 from .models import *
 
+
+def info_student(request):
+    student = Student.objects.all()
+    return render(request,
+                  'student.html',
+                  {"student": student})
+
+def mentor_info(request):
+    mentor = Mentor.objects.all()
+    return render(request,
+                  'mentor.html',
+                  {"mentor": mentor})
+
+def task_info(request):
+    task = Task.objects.all()
+    return render(request,
+                  'task.html',
+                  {"task": task})
+
+def visit_info(request):
+    visit = Visit.objects.all()
+    return render(request,
+                  'visit.html',
+                  {"visit": visit})
+
+
+
 # def hello(request):
 #     return HttpResponse("Привет это работа views+urls")
 #

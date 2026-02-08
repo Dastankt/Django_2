@@ -1,8 +1,16 @@
 from django.contrib import admin
 from django.urls import path
 from .views import *
+from . import views
 
 urlpatterns = [
+    path('student/', views.info_student, name='student'),
+    path('mentor/', views.mentor_info, name='mentor'),
+    path('task/', views.task_info, name='task'),
+    path('visit/', views.visit_info, name='visit')
+
+
+
 
     # path('hello/', views.hello, name='hello'),
     # path('time/', views.time, name='time'),
