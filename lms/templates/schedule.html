@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>LMS | Расписание</title>
+    <style>
+        :root { --bg: #050505; --card-bg: rgba(20, 20, 20, 0.9); --text: #f5f5f5; --red: #e63946; --yellow: #ffb703; --border: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
+
+        /* Анимация фона */
+        .area { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin:0; padding:0; overflow:hidden; }
+        .circles li { position: absolute; list-style: none; background: rgba(230, 57, 70, 0.1); filter: blur(40px); animation: animate 20s infinite linear; bottom: -150px; }
+        .circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; }
+        @keyframes animate { 0%{transform: translateY(0) rotate(0);} 100%{transform: translateY(-1200px) rotate(720deg); opacity:0; border-radius: 50%;} }
+
+        /* Sidebar */
+        .sidebar { width: 250px; background: #0a0a0a; border-right: 1px solid var(--red); position: fixed; height: 100vh; z-index: 10; }
+        .sidebar h2 { text-align: center; color: var(--yellow); margin: 30px 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: #888; text-decoration: none; transition: 0.3s; border-left: 3px solid transparent; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(230, 57, 70, 0.1); border-left: 3px solid var(--red); color: #fff; }
+
+        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); box-sizing: border-box; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: var(--red); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: var(--yellow); color: #000; transform: translateY(-2px); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: var(--yellow); border-bottom: 2px solid var(--red); }
+        td { padding: 15px; border-bottom: 1px solid #222; }
+    </style>
+</head>
+<body>
+    <div class="area"><ul class="circles"><li></li><li></li><li></li></ul></div>
+
+    <div class="sidebar">
+        <h2>LMS</h2>
+        <a href="{% url 'home' %}">🏠 Главная</a>
+        <a href="{% url 'student' %}">👨‍🎓 Студенты</a>
+        <a href="{% url 'mentor' %}">👨‍🏫 Менторы</a>
+        <a href="{% url 'task' %}">📝 Задания</a>
+        <a href="{% url 'visit' %}">📅 Посещаемость</a>
+        <a href="{% url 'schedule' %}" class="active">🕒 Расписание</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Учебный график</h1>
+
+        <div class="card">
+            <h3>Добавить занятие</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <select name="day" required>
+                        <option value="ПН">Понедельник</option>
+                        <option value="ВТ">Вторник</option>
+                        <option value="СР">Среда</option>
+                        <option value="ЧТ">Четверг</option>
+                        <option value="ПТ">Пятница</option>
+                        <option value="СБ">Суббота</option>
+                    </select>
+                    <input type="time" name="time" required>
+                </div>
+                <input type="text" name="subject" placeholder="Название предмета" required>
+                <select name="mentor" required>
+                    <option value="" disabled selected>Выберите ментора</option>
+                    {% for m in mentors %}
+                        <option value="{{ m.id }}">{{ m.first_name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" name="add_schedule" class="btn">Записать в график</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>День</th>
+                        <th>Время</th>
+                        <th>Предмет</th>
+                        <th>Ментор</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in schedules %}
+                    <tr>
+                        <td style="color: var(--yellow); font-weight: bold;">{{ s.get_day_display }}</td>
+                        <td>{{ s.time|time:"H:i" }}</td>
+                        <td>{{ s.subject }}</td>
+                        <td>{{ s.mentor.first_name }}</td>
+                        <td>
+                            <form method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ s.id }}">
+                                <button type="submit" class="btn" style="padding: 5px 10px; background: #333;">❌</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align: center;">Расписание пока пусто</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

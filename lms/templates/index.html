@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>LMS | Dashboard</title>
+    <style>
+        :root { --bg: #050505; --card-bg: rgba(20, 20, 20, 0.9); --text: #f5f5f5; --red: #e63946; --yellow: #ffb703; --border: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow: hidden; }
+
+        /* Анимация фона */
+        .area { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin:0; padding:0; }
+        .circles li { position: absolute; list-style: none; background: rgba(230, 57, 70, 0.1); filter: blur(40px); animation: animate 25s infinite linear; bottom: -150px; }
+        .circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; }
+        .circles li:nth-child(2){ left: 10%; width: 150px; height: 150px; background: var(--yellow); opacity: 0.05; animation-delay: 2s; }
+        @keyframes animate { 0%{transform: translateY(0) rotate(0);} 100%{transform: translateY(-1200px) rotate(720deg); opacity:0; border-radius: 50%;} }
+
+        /* Sidebar */
+        .sidebar { width: 250px; background: #0a0a0a; border-right: 1px solid var(--red); position: fixed; height: 100vh; z-index: 10; }
+        .sidebar h2 { text-align: center; color: var(--yellow); margin: 30px 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: #888; text-decoration: none; transition: 0.3s; border-left: 3px solid transparent; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(230, 57, 70, 0.1); border-left: 3px solid var(--red); color: #fff; }
+
+        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); box-sizing: border-box; display: flex; flex-direction: column; gap: 30px; }
+
+        /* Статистика */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 30px; text-align: center; backdrop-filter: blur(10px); transition: 0.3s; }
+        .stat-card:hover { border-color: var(--yellow); transform: translateY(-5px); }
+        .stat-card h3 { margin: 0; color: #888; font-size: 14px; text-transform: uppercase; }
+        .stat-card p { margin: 10px 0 0; font-size: 40px; font-weight: bold; color: var(--yellow); }
+    </style>
+</head>
+<body>
+    <div class="area"><ul class="circles"><li></li><li></li><li></li></ul></div>
+    <div class="sidebar">
+        <h2>LMS</h2>
+        <a href="{% url 'home' %}" class="active">🏠 Главная</a>
+        <a href="{% url 'student' %}">👨‍🎓 Студенты</a>
+        <a href="{% url 'mentor' %}">👨‍🏫 Менторы</a>
+        <a href="{% url 'task' %}">📝 Задания</a>
+        <a href="{% url 'visit' %}">📅 Посещаемость</a>
+        <a href="{% url 'schedule' %}">🕒 Расписание</a>
+    </div>
+
+    <div class="main-content">
+        <h1 style="color: var(--yellow);">Добро пожаловать в панель управления</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card"><h3>Всего студентов</h3><p>{{ st_count }}</p></div>
+            <div class="stat-card"><h3>Всего менторов</h3><p>{{ m_count }}</p></div>
+            <div class="stat-card"><h3>Выполнено задач</h3><p>{{ tasks_done }}</p></div>
+        </div>
+
+        <div class="stat-card" style="text-align: left;">
+            <h2 style="color: var(--red);">Системное уведомление</h2>
+            <p style="font-size: 16px; color: #ccc;">Все модули работают исправно. Используйте боковое меню для управления базой данных.</p>
+        </div>
+    </div>
+</body>
+</html>

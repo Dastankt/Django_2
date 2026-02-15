@@ -1,14 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>LMS | Посещаемость</title>
+    <style>
+        /* Дублируем базовые стили из index.html */
+        :root { --bg: #050505; --card-bg: rgba(20, 20, 20, 0.9); --text: #f5f5f5; --red: #e63946; --yellow: #ffb703; --border: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
+        .area { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin:0; padding:0; }
+        .circles li { position: absolute; list-style: none; background: rgba(230, 57, 70, 0.1); filter: blur(40px); animation: animate 25s infinite linear; bottom: -150px; }
+        @keyframes animate { 0%{transform: translateY(0);} 100%{transform: translateY(-1200px); opacity:0;} }
+
+        .sidebar { width: 250px; background: #0a0a0a; border-right: 1px solid var(--red); position: fixed; height: 100vh; z-index: 10; }
+        .sidebar a { display: block; padding: 15px 25px; color: #888; text-decoration: none; border-left: 3px solid transparent; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(230, 57, 70, 0.1); border-left: 3px solid var(--red); color: #fff; }
+
+        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); box-sizing: border-box; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: var(--red); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background: var(--yellow); color: #000; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; color: var(--yellow); border-bottom: 2px solid var(--red); }
+        td { padding: 15px; border-bottom: 1px solid #222; }
+        .check-box { width: 20px; height: 20px; accent-color: var(--yellow); }
+    </style>
 </head>
 <body>
-    {% for i in visit %}
-    <h1>{{ i.student }}</h1>
-    <h1>{{ i.is_visited }}</h1>
-    <h1>{{ i.date }}</h1>
-    {% endfor %}
+    <div class="area"><ul class="circles"><li></li><li></li></ul></div>
+    <div class="sidebar">
+        <h2 style="text-align:center; color: var(--yellow)">LMS</h2>
+        <a href="{% url 'home' %}">🏠 Главная</a>
+        <a href="{% url 'student' %}">👨‍🎓 Студенты</a>
+        <a href="{% url 'mentor' %}">👨‍🏫 Менторы</a>
+        <a href="{% url 'task' %}">📝 Задания</a>
+        <a href="{% url 'visit' %}" class="active">📅 Посещаемость</a>
+        <a href="{% url 'schedule' %}">🕒 Расписание</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Журнал посещаемости</h1>
+
+        <div class="card">
+            <h3>Отметить присутствие</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <select name="student" required>
+                    <option value="" disabled selected>Выберите студента</option>
+                    {% for s in student %}<option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }}</option>{% endfor %}
+                </select>
+                <input type="date" name="date" required>
+                <label><input type="checkbox" name="is_visited" class="check-box"> Был на занятии</label>
+                <br><br>
+                <button type="submit" class="btn">Сохранить запись</button>
+            </form>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Студент</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Настройка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in visit %}
+                    <tr>
+                        <td>{{ i.student.first_name }} {{ i.student.last_name }}</td>
+                        <td>{{ i.date }}</td>
+                        <td>
+                            {% if i.is_visited %}
+                            <span style="color: #00ff7f;">● Присутствовал</span>
+                            {% else %}
+                            <span style="color: var(--red);">○ Отсутствовал</span>
+                            {% endif %}
+                        </td>
+                        <td><button class="btn" style="padding: 5px 10px; font-size: 12px; background: #333;">⚙️</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

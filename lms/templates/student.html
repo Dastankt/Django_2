@@ -1,15 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>LMS | Студенты</title>
+    <style>
+        :root {
+            --bg: #050505; --card-bg: rgba(20, 20, 20, 0.9); --text: #f5f5f5;
+            --red: #e63946; --yellow: #ffb703; --border: #333;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
+
+        /* Анимация фона */
+        .area { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin:0; padding:0; }
+        .circles li { position: absolute; list-style: none; background: rgba(230, 57, 70, 0.1); filter: blur(40px); animation: animate 20s infinite linear; bottom: -150px; }
+        .circles li:nth-child(1){ left: 20%; width: 80px; height: 80px; }
+        .circles li:nth-child(2){ left: 70%; width: 120px; height: 120px; background: var(--yellow); opacity: 0.05; animation-delay: 2s; }
+        @keyframes animate { 0%{transform: translateY(0) rotate(0);} 100%{transform: translateY(-1200px) rotate(720deg); opacity:0; border-radius: 50%;} }
+
+        /* Sidebar (не исчезает) */
+        .sidebar { width: 250px; background: #0a0a0a; border-right: 1px solid var(--red); position: fixed; height: 100vh; z-index: 10; }
+        .sidebar h2 { text-align: center; color: var(--yellow); margin: 30px 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: #888; text-decoration: none; transition: 0.3s; border-left: 3px solid transparent; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(230, 57, 70, 0.1); border-left: 3px solid var(--red); color: #fff; }
+
+        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); box-sizing: border-box; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 25px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid var(--border); color: #fff; border-radius: 8px; box-sizing: border-box; }
+
+        .btn { background: var(--red); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: var(--yellow); color: #000; transform: translateY(-2px); }
+
+        /* Сетка без "плывущих" элементов */
+        .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .student-card { text-align: center; }
+        .student-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid var(--yellow); margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-    {% for i in student %}
-    <h1>{{ i.last_name }}</h1>
-    <h1>{{ i.first_name }}</h1>
-    <h1>{{ i.phone_number }}</h1>
-    <img src="{{ i.avatar.url }}">
-    {% endfor %}
+    <div class="area"><ul class="circles"><li></li><li></li><li></li></ul></div>
+    <div class="sidebar">
+        <h2>LMS</h2>
+        <a href="{% url 'home' %}">🏠 Главная</a>
+        <a href="{% url 'student' %}" class="active">👨‍🎓 Студенты</a>
+        <a href="{% url 'mentor' %}">👨‍🏫 Менторы</a>
+        <a href="{% url 'task' %}">📝 Задания</a>
+        <a href="{% url 'visit' %}">📅 Посещаемость</a>
+        <a href="{% url 'schedule' %}">🕒 Расписание</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Студенты</h1>
+        <div class="card">
+            <h3>Добавить студента</h3>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="first_name" placeholder="Имя" required>
+                <input type="text" name="last_name" placeholder="Фамилия" required>
+                <input type="number" name="phone_number" placeholder="Телефон" required>
+                <input type="file" name="avatar">
+                <button type="submit" class="btn">Зарегистрировать</button>
+            </form>
+        </div>
+
+        <div class="student-grid">
+            {% for i in student %}
+            <div class="card student-card">
+                <img src="{{ i.avatar.url }}" alt="ava">
+                <h3>{{ i.first_name }} {{ i.last_name }}</h3>
+                <p>{{ i.phone_number }}</p>
+                <a href="#" class="btn" style="text-decoration: none; display: inline-block; font-size: 12px;">⚙️ Настроить</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

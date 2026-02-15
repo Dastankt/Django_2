@@ -26,3 +26,17 @@ class Visit(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     is_visited = models.BooleanField(default=False)
     date = models.DateField()
+
+
+class Schedule(models.Model):
+    DAYS = [
+        ('ПН', 'Понедельник'), ('ВТ', 'Вторник'), ('СР', 'Среда'),
+        ('ЧТ', 'Четверг'), ('ПТ', 'Пятница'), ('СБ', 'Суббота'),
+    ]
+    day = models.CharField(max_length=2, choices=DAYS)
+    time = models.TimeField()
+    subject = models.TextField(max_length=50)
+    mentor = models.ForeignKey(Mentor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.day} | {self.subject}"
