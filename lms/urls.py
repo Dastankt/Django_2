@@ -9,7 +9,11 @@ urlpatterns = [
     path('task/', views.task_info, name='task'),
     path('visit/', views.visit_info, name='visit'),
     path('', views.dashboard, name='home'),
-    path('schedule/', views.schedule_view, name='schedule')
+    path('schedule/', views.schedule_view, name='schedule'),
+    path('add_mentor/', views.mentor_items, name='mentor_items'),
+    path('add_student/', views.student_items, name='student_items'),
+    path('add_task/', views.task_items, name='task_items'),
+    path('add_visit/', views.visit_items, name='visit_items')
 
 
 

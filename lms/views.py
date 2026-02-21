@@ -1,50 +1,104 @@
 from django.http import HttpResponse
 from datetime import datetime
 import random, string
-from django.shortcuts import render
 from .models import *
-
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Student, Mentor, Task, Visit
+from .forms import *
+from .models import Schedule
 
 
 def info_student(request):
-    if request.method == 'POST':
-        # Получаем данные из формы
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        phone_number = request.POST.get('phone_number')
-        avatar = request.FILES.get('avatar')
-
-        # Создаем запись в базе
-        Student.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            avatar=avatar
-        )
-        return redirect('student')  # Перенаправляем на страницу списка
-
     student = Student.objects.all()
-    return render(request, 'student.html', {"student": student})
-
-from django.shortcuts import render, redirect
-from .models import Student, Mentor, Task, Visit
-
-
-def dashboard(request):
-    context = {
-        "st_count": Student.objects.count(),
-        "m_count": Mentor.objects.count(),
-        "tasks_done": Task.objects.filter(is_completed=True).count(),
-        "student_list": Student.objects.all(),
-        "mentor_list": Mentor.objects.all(),  # Для формы добавления менторов
-    }
-    return render(request, 'index.html', context)
+    return render(request,
+                  'student.html',
+                  {"student": student})
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Schedule, Mentor
+def mentor_info(request):
+    mentor = Mentor.objects.all()
+    return render(request,
+                  'mentor.html',
+                  {"mentor": mentor})
 
+def task_info(request):
+    task = Task.objects.all()
+    return render(request,
+                  'task.html',
+                  {"task": task})
+
+def visit_info(request):
+    visit = Visit.objects.all()
+    return render(request,
+                  'visit.html',
+                  {"visit": visit})
+
+
+
+
+def mentor_items(request):
+    sort_by = request.GET.get('sort', 'id')
+    items = Mentor.objects.all().order_by(sort_by)
+    if request.method == "POST":
+        form = MentorForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('item_list')
+    else:
+        form = MentorForm()
+
+    return render(request, 'add_mentor.html', {
+        'items': items,
+        'form': form
+    })
+
+def student_items(request):
+    sort_by = request.GET.get('sort', 'id')
+    items = Student.objects.all().order_by(sort_by)
+    if request.method == "POST":
+        form = StudentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('item_list')
+    else:
+        form = StudentForm()
+
+    return render(request, 'add_student.html', {
+        'items': items,
+        'form': form
+    })
+
+def task_items(request):
+    sort_by = request.GET.get('sort', 'id')
+    items = Task.objects.all().order_by(sort_by)
+    if request.method == "POST":
+        form = TaskForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('item_list')
+    else:
+        form = TaskForm()
+
+    return render(request, 'add_task.html', {
+        'items': items,
+        'form': form
+    })
+
+def visit_items(request):
+    sort_by = request.GET.get('sort', 'id')
+    items = Visit.objects.all().order_by(sort_by)
+    if request.method == "POST":
+        form = VisitForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('item_list')
+    else:
+        form = VisitForm()
+
+    return render(request, 'add_visit.html', {
+        'items': items,
+        'form': form
+    })
 
 def schedule_view(request):
     # ЛОГИКА ДОБАВЛЕНИЯ
@@ -79,45 +133,6 @@ def schedule_view(request):
     return render(request, 'schedule.html', context)
 
 
-def mentor_info(request):
-    if request.method == 'POST':
-        Mentor.objects.create(
-            first_name=request.POST.get('first_name'),
-            last_name=request.POST.get('last_name'),
-            phone_number=request.POST.get('phone_number'),
-            avatar=request.FILES.get('avatar'),
-            is_mentor=True
-        )
-        return redirect('mentor')
-    mentor = Mentor.objects.all()
-    return render(request, 'mentor.html', {"mentor": mentor})
-
-def task_info(request):
-    if request.method == 'POST':
-        student_id = request.POST.get('student')
-        Task.objects.create(
-            student=Student.objects.get(id=student_id),
-            codecoin=request.POST.get('codecoin'),
-            is_completed=request.POST.get('is_completed') == 'on'
-        )
-        return redirect('task')
-    task = Task.objects.all()
-    student = Student.objects.all()
-    return render(request, 'task.html', {"task": task, "student": student})
-
-def visit_info(request):
-    if request.method == 'POST':
-        student_id = request.POST.get('student')
-        Visit.objects.create(
-            student=Student.objects.get(id=student_id),
-            date=request.POST.get('date'),
-            is_visited=request.POST.get('is_visited') == 'on'
-        )
-        return redirect('visit')
-    visit = Visit.objects.all()
-    student = Student.objects.all()
-    return render(request, 'visit.html', {"visit": visit, "student": student})
-
 def dashboard(request):
     # Эта функция для главной страницы
     context = {
@@ -126,6 +141,7 @@ def dashboard(request):
         "tasks_done": Task.objects.count(),
     }
     return render(request, 'index.html', context)
+
 
 # def hello(request):
 #     return HttpResponse("Привет это работа views+urls")

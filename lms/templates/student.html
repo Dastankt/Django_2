@@ -52,17 +52,7 @@
 
     <div class="main-content">
         <h1>Студенты</h1>
-        <div class="card">
-            <h3>Добавить студента</h3>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="text" name="first_name" placeholder="Имя" required>
-                <input type="text" name="last_name" placeholder="Фамилия" required>
-                <input type="number" name="phone_number" placeholder="Телефон" required>
-                <input type="file" name="avatar">
-                <button type="submit" class="btn">Зарегистрировать</button>
-            </form>
-        </div>
+
 
         <div class="student-grid">
             {% for i in student %}
@@ -74,6 +64,9 @@
             </div>
             {% endfor %}
         </div>
+        <a href="{% url 'student_items' %}" class="btn btn-primary btn-sm">
+    + Добавить студента
+</a>
     </div>
 </body>
 </html>

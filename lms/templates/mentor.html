@@ -43,17 +43,7 @@
 
     <div class="main-content">
         <h1>Преподаватели</h1>
-        <div class="card">
-            <h3>Добавить ментора</h3>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="text" name="first_name" placeholder="Имя" required>
-                <input type="text" name="last_name" placeholder="Фамилия" required>
-                <input type="number" name="phone_number" placeholder="Номер телефона" required>
-                <input type="file" name="avatar">
-                <button type="submit" class="btn">Добавить в базу</button>
-            </form>
-        </div>
+
 
         <div class="grid">
             {% for i in mentor %}
@@ -65,6 +55,9 @@
             </div>
             {% endfor %}
         </div>
+        <a href="{% url 'mentor_items' %}" class="btn btn-primary btn-sm">
+    + Добавить ментора
+</a>
     </div>
 </body>
 </html>
