@@ -1,11 +1,24 @@
 from django.http import HttpResponse
 from datetime import datetime
 import random, string
-from .models import *
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Student, Mentor, Task, Visit
+from .models import Student, Mentor, Task, Visit, Schedule
 from .forms import *
-from .models import Schedule
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+
+
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.method)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, "signup.html", {"form": form})
+
 
 
 def info_student(request):

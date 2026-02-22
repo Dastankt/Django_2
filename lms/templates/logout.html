@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+                /* Используем те же стили, что и в Login для единства дизайна */
+        :root { --bg: #050505; --card-bg: rgba(20, 20, 20, 0.95); --text: #f5f5f5; --red: #e63946; --yellow: #ffb703; --border: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+
+        .area { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin:0; padding:0; }
+        .circles li { position: absolute; list-style: none; background: rgba(230, 57, 70, 0.1); filter: blur(40px); animation: animate 25s infinite linear; bottom: -150px; }
+        .circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; }
+        .circles li:nth-child(2){ left: 10%; width: 150px; height: 150px; background: var(--yellow); opacity: 0.05; animation-delay: 2s; }
+        @keyframes animate { 0%{transform: translateY(0) rotate(0);} 100%{transform: translateY(-1200px) rotate(720deg); opacity:0; border-radius: 50%;} }
+
+        .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 450px; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
+        .auth-card h2 { color: var(--yellow); margin-bottom: 30px; font-size: 28px; text-transform: uppercase; letter-spacing: 2px; }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; color: #888; margin-bottom: 6px; font-size: 13px; }
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%; padding: 12px 15px; background: #111; border: 1px solid var(--border); border-radius: 8px; color: #fff; box-sizing: border-box; transition: 0.3s;
+        }
+        input:focus { outline: none; border-color: var(--yellow); box-shadow: 0 0 10px rgba(255, 183, 3, 0.2); }
+
+        .submit-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--yellow); color: var(--yellow); border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 15px; }
+        .submit-btn:hover { background: var(--yellow); color: #000; box-shadow: 0 0 20px rgba(255, 183, 3, 0.4); }
+
+        .footer-link { margin-top: 25px; color: #666; font-size: 14px; }
+        .footer-link a { color: var(--red); text-decoration: none; font-weight: bold; }
+        .error-list { color: var(--red); font-size: 12px; list-style: none; padding: 0; margin: 5px 0; text-align: left; }
+
+
+        /* Контейнер на весь экран */
+.area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Уходит на задний план */
+    background: #050505; /* Основной глубокий черный цвет */
+    overflow: hidden;
+}
+
+.circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.circles li {
+    position: absolute;
+    list-style: none;
+    display: block;
+    background: rgba(230, 57, 70, 0.15); /* Красный оттенок с низкой прозрачностью */
+    filter: blur(50px); /* Эффект мягкого свечения */
+    bottom: -160px;
+    animation: animate 25s infinite linear;
+}
+
+/* Настройка разных кругов (размер, позиция, задержка) */
+.circles li:nth-child(1) {
+    left: 25%;
+    width: 120px;
+    height: 120px;
+    animation-delay: 0s;
+}
+
+.circles li:nth-child(2) {
+    left: 10%;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 183, 3, 0.1); /* Желтый оттенок */
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.circles li:nth-child(3) {
+    left: 70%;
+    width: 100px;
+    height: 100px;
+    animation-delay: 4s;
+}
+
+.circles li:nth-child(4) {
+    left: 40%;
+    width: 250px;
+    height: 250px;
+    background: rgba(230, 57, 70, 0.1);
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.circles li:nth-child(5) {
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 183, 3, 0.08);
+    animation-delay: 7s;
+}
+
+/* Анимация движения снизу вверх с вращением */
+@keyframes animate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+        border-radius: 20%; /* В начале более квадратные */
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-1200px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%; /* В конце становятся круглыми */
+    }
+}
+    </style>
+</head>
+<body>
+<h1>Прощайте👋</h1>
+</body>
+</html>
